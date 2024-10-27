@@ -48,7 +48,7 @@ const data = {
       url: "#knowledge",
       items: [{ title: "Articles", url: "#articles" }],
     },
-    { icon: Quote, title: "Preset Quotes", url: "/dashboard/" },
+    { icon: Quote, title: "Preset Quotes", url: "/" },
     { icon: Building2, title: "Properties", url: "#properties" },
     { icon: UserRound, title: "Contacts", url: "#contacts" },
     { icon: UsersRound, title: "Team", url: "#team" },

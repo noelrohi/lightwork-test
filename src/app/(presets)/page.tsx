@@ -1,4 +1,5 @@
 "use client";
+
 import { DatePickerWithRange } from "@/components/daterange-picker";
 import { SearchInput } from "@/components/search-input";
 import { Button } from "@/components/ui/button";
@@ -18,39 +19,41 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { BEARER_TOKEN } from "@/constants";
+import { presetQuotation } from "@/data/preset-quotation";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { EditIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { parseAsStringEnum, useQueryState } from "nuqs";
 
-export default function PresetQuotation() {
+export default function Page() {
   const [type] = useQueryState(
     "type",
     parseAsStringEnum(["fixed", "hourly"])
       .withOptions({
         clearOnDefault: true,
+        history: "replace",
       })
       .withDefault("fixed"),
   );
-  const jobTypes = [
-    {
-      type: "Air Conditioning Repair",
-      description: "Standard AC repair service including diagnostics, refrigerant...",
-      basePrice: 150,
-      additionalCharges: 50,
+
+  const { data: presets } = useSuspenseQuery({
+    queryKey: ["presets"],
+    queryFn: async () => {
+      const data = await presetQuotation.getAllPresets({
+        contractorId: "6701dd90778f1dc710cc53bb",
+        headers: {
+          Authorization: `Bearer ${BEARER_TOKEN}`,
+        },
+      });
+      return data as Array<{
+        type: string;
+        description: string;
+        basePrice: number;
+        additionalCharges: number;
+      }>;
     },
-    {
-      type: "Plumbing Installation",
-      description: "New plumbing system installation with repair of existing pipe...",
-      basePrice: 200,
-      additionalCharges: 75,
-    },
-    {
-      type: "Electrical Wiring",
-      description: "Residential electrical wiring service for both new installations...",
-      basePrice: 180,
-      additionalCharges: 60,
-    },
-  ];
+  });
 
   return (
     <div className="p-6 space-y-6">
@@ -119,7 +122,7 @@ export default function PresetQuotation() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {jobTypes.map((job) => (
+          {presets.map((job) => (
             <TableRow key={job.type}>
               <TableCell className="whitespace-nowrap">{job.type}</TableCell>
               <TableCell className="truncate max-w-[25rem]">{job.description}</TableCell>

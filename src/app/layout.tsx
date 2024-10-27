@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "./globals.css";
+import { TanstackQueryProvider } from "@/components/providers/tanstack-query";
 
 const fontSans = Inter({
   subsets: ["latin"],
@@ -29,7 +30,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${fontSans.variable} antialiased font-sans`}>
-        <NuqsAdapter>{children}</NuqsAdapter>
+        <NuqsAdapter>
+          <TanstackQueryProvider>{children}</TanstackQueryProvider>
+        </NuqsAdapter>
       </body>
     </html>
   );
