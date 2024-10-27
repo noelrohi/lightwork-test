@@ -44,7 +44,7 @@ export default function Page() {
         const data = await presetQuotation.getAllPresets({
           contractorId: "6701dd90778f1dc710cc53bb",
           headers: {
-            Authorization: `Bearer ${BEARER_TOKEN}`,
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_TOKEN}`,
           },
         });
         return data as Array<{
