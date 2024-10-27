@@ -40,18 +40,23 @@ export default function Page() {
   const { data: presets } = useSuspenseQuery({
     queryKey: ["presets"],
     queryFn: async () => {
-      const data = await presetQuotation.getAllPresets({
-        contractorId: "6701dd90778f1dc710cc53bb",
-        headers: {
-          Authorization: `Bearer ${BEARER_TOKEN}`,
-        },
-      });
-      return data as Array<{
-        type: string;
-        description: string;
-        basePrice: number;
-        additionalCharges: number;
-      }>;
+      try {
+        const data = await presetQuotation.getAllPresets({
+          contractorId: "6701dd90778f1dc710cc53bb",
+          headers: {
+            Authorization: `Bearer ${BEARER_TOKEN}`,
+          },
+        });
+        return data as Array<{
+          type: string;
+          description: string;
+          basePrice: number;
+          additionalCharges: number;
+        }>;
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
     },
   });
 
@@ -122,24 +127,32 @@ export default function Page() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {presets.map((job) => (
-            <TableRow key={job.type}>
-              <TableCell className="whitespace-nowrap">{job.type}</TableCell>
-              <TableCell className="truncate max-w-[25rem]">{job.description}</TableCell>
-              <TableCell>${job.basePrice}</TableCell>
-              <TableCell>${job.additionalCharges}</TableCell>
-              <TableCell className="flex gap-2 flex-nowrap">
-                <Button variant="outline" size="sm">
-                  <EditIcon className="h-4 w-4" />
-                  <span className="text-xs">Edit</span>
-                </Button>
-                <Button variant="destructive" size="sm">
-                  <Trash2Icon className="h-4 w-4" />
-                  <span className="text-xs">Delete</span>
-                </Button>
+          {presets.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={5} className="text-center">
+                No Data
               </TableCell>
             </TableRow>
-          ))}
+          ) : (
+            presets.map((job) => (
+              <TableRow key={job.type}>
+                <TableCell className="whitespace-nowrap">{job.type}</TableCell>
+                <TableCell className="truncate max-w-[25rem]">{job.description}</TableCell>
+                <TableCell>${job.basePrice}</TableCell>
+                <TableCell className="whitespace-nowrap">${job.additionalCharges}</TableCell>
+                <TableCell className="flex gap-2 flex-nowrap">
+                  <Button variant="outline" size="sm">
+                    <EditIcon className="h-4 w-4" />
+                    <span className="text-xs">Edit</span>
+                  </Button>
+                  <Button variant="destructive" size="sm">
+                    <Trash2Icon className="h-4 w-4" />
+                    <span className="text-xs">Delete</span>
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </div>
