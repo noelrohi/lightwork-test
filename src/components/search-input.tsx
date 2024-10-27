@@ -2,9 +2,13 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Search } from "lucide-react";
 
-export function SearchInput({ className, ...props }: React.ComponentProps<typeof Input>) {
+interface SearchInputProps extends React.ComponentProps<typeof Input> {
+  containerClassName?: string;
+}
+
+export function SearchInput({ className, containerClassName, ...props }: SearchInputProps) {
   return (
-    <div className="relative">
+    <div className={cn("relative", containerClassName)}>
       <Input
         id="input-26"
         className={cn("peer pe-9 ps-9", className)}
